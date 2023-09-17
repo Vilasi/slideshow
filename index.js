@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const chokidar = require('chokidar');
 const { execSync } = require('child_process');
+const absolutePath = path.resolve(__dirname);
 
 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 const outputFileName = 'index.html';
@@ -99,11 +100,13 @@ const main = () => {
 
 // Execute the main function
 main();
+// handleGitOperations();
 
 const executeGitCommand = (command) => {
   try {
     execSync(command, { stdio: 'inherit' });
   } catch (err) {
+    console.log(err);
     // Handle the 'nothing to commit' case gracefully
     if (command.includes('git commit') && err.status === 1) {
       console.log('Nothing to commit. Skipping...');
@@ -138,16 +141,11 @@ const handleGitOperations = () => {
 };
 
 // Set up chokidar to watch the current directory
-const watcher = chokidar.watch(__dirname, {
+const watcher = chokidar.watch(absolutePath, {
   persistent: true,
   ignored: ['**/.git/**', /(^|[\/\\])\../],
-  ignoreInitial: false, // this will ignore all files upon initialization
+  ignoreInitial: true, // this will ignore all files upon initialization
   depth: 0,
-});
-
-watcher.on('ready', () => {
-  console.log('Watcher is ready and watching for changes...');
-  console.log(__dirname);
 });
 
 watcher.on('add', (filePath) => {
@@ -155,19 +153,26 @@ watcher.on('add', (filePath) => {
 
   const ext = path.extname(filePath).substring(1);
 
+  // ============================
   // Check if the added file is the output HTML file
   //   if (path.basename(filePath) === outputFileName) {
   //     console.log('Output HTML file updated. Skipping regeneration...');
   //     return;
   //   }
+  // ============================
 
   if (imageExtensions.includes(ext)) {
-    console.log(`Image added: ${filePath}. Regenerating HTML...`);
     main();
 
     // Handle git operations after generating the HTML
     handleGitOperations();
+    console.log(`Image added: ${filePath}. Regenerating HTML...`);
   }
+});
+
+watcher.on('ready', () => {
+  console.log('Watcher is ready and watching for changes...');
+  console.log(absolutePath);
 });
 
 // watcher.on('add', (filePath) => {
@@ -181,4 +186,4 @@ watcher.on('add', (filePath) => {
 //   }
 // });
 
-console.log(`Watching for new images in directory: ${__dirname}`);
+console.log(`Watching for new images in directory: ${absolutePath}`);
