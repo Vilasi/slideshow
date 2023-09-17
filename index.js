@@ -126,7 +126,7 @@ const handleGitOperations = () => {
 // Set up chokidar to watch the current directory
 const watcher = chokidar.watch(process.cwd(), {
   persistent: true,
-  ignored: [outputFileName, '**/.git/**'],
+  ignored: [outputFileName, '**/.git/**', /(^|[\/\\])\../],
   depth: 0,
 });
 
