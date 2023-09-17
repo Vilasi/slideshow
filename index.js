@@ -6,7 +6,7 @@ const { execSync } = require('child_process');
 const absolutePath = path.resolve(__dirname);
 
 // List of supported image file extensions
-const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 const outputFileName = 'index.html';
 
 // Function to delete existing HTML file if it exists
@@ -151,13 +151,13 @@ watcher.on('add', (filePath) => {
 
   const ext = path.extname(filePath).substring(1);
 
-  if (imageExtensions.includes(ext)) {
-    main();
+  main();
+  handleGitOperations();
+  console.log(`Image added: ${filePath}. Regenerating HTML...`);
+  // if (imageExtensions.includes(ext)) {
 
-    // Handle git operations after generating the HTML
-    handleGitOperations();
-    console.log(`Image added: ${filePath}. Regenerating HTML...`);
-  }
+  // Handle git operations after generating the HTML
+  // }
 });
 
 // This indicates if the watcher is functioning properly.
