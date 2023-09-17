@@ -28,7 +28,7 @@ const getImageFiles = (directory) => {
 // Function to generate HTML
 const generateHTML = (imageFiles) => {
   return `<!DOCTYPE html>
-<html class="w-auto">
+<html class="w-auto overflow-x-hidden">
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -57,19 +57,19 @@ const generateHTML = (imageFiles) => {
       crossorigin="anonymous"
     />
 </head>
-<body class="d-flex flex-column align-items-start">
+<body class="d-flex flex-column align-items-center">
   <header class="container my-5 border-bottom">
-    <h1 class="display-1">Joe's Desktop Background Slideshow</h1>
+    <h1 class="display-1 text-center">Joe's Desktop Background Slideshow</h1>
     <p class="lead text-center">Click Image to View Full Size or Download</p>
   </header>
-  <main class="row text-center">
+  <main class="row text-center container">
     
     ${imageFiles
       .map(
         (file, index) =>
           `<div class="col-lg-3">
             <a href="${file}" target="_blank">
-            <img class="img-fluid m-5 shadow-lg border rounded" src="${file}" alt="${path.basename(
+            <img class="img-fluid m-lg-5 shadow-lg border rounded w-100" src="${file}" alt="${path.basename(
             file,
             path.extname(file)
           )}"></a>
