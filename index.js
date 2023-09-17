@@ -118,6 +118,13 @@ const watcher = chokidar.watch(process.cwd(), {
 
 watcher.on('add', (filePath) => {
   const ext = path.extname(filePath).substring(1);
+
+  // Check if the added file is the output HTML file
+  if (path.basename(filePath) === outputFileName) {
+    console.log('Output HTML file updated. Skipping regeneration...');
+    return;
+  }
+
   if (imageExtensions.includes(ext)) {
     console.log(`Image added: ${filePath}. Regenerating HTML...`);
     main();
@@ -126,5 +133,16 @@ watcher.on('add', (filePath) => {
     handleGitOperations();
   }
 });
+
+// watcher.on('add', (filePath) => {
+//   const ext = path.extname(filePath).substring(1);
+//   if (imageExtensions.includes(ext)) {
+//     console.log(`Image added: ${filePath}. Regenerating HTML...`);
+//     main();
+
+//     // Handle git operations after generating the HTML
+//     handleGitOperations();
+//   }
+// });
 
 console.log(`Watching for new images in directory: ${process.cwd()}`);
