@@ -30,8 +30,22 @@ const generateHTML = (imageFiles) => {
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Joe's Wallpaper Gallery</title>
+ <!-- Facebook Meta Tags -->
+  <meta property="og:url" content="https://vilasi.github.io/slideshow/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Joe's Wallpaper Gallery">
+  <meta property="og:description" content="undefined">
+  <meta property="og:image" content="https://i.imgur.com/EgCdtLB.jpg">
   <meta name="description" content="" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="vilasi.github.io">
+  <meta property="twitter:url" content="https://vilasi.github.io/slideshow/">
+  <meta name="twitter:title" content="Joe's Wallpaper Gallery">
+  <meta name="twitter:description" content="undefined">
+  <meta name="twitter:image" content="https://i.imgur.com/EgCdtLB.jpg">
   <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -127,10 +141,18 @@ const handleGitOperations = () => {
 const watcher = chokidar.watch(process.cwd(), {
   persistent: true,
   ignored: [outputFileName, '**/.git/**', /(^|[\/\\])\../],
+  ignoreInitial: true, // this will ignore all files upon initialization
   depth: 0,
 });
 
+watcher.on('ready', () => {
+  console.log('Watcher is ready and watching for changes...');
+  console.log(__dirname);
+});
+
 watcher.on('add', (filePath) => {
+  console.log(`File added: ${filePath}`);
+
   const ext = path.extname(filePath).substring(1);
 
   // Check if the added file is the output HTML file
