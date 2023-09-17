@@ -86,14 +86,28 @@ const main = () => {
 // Execute the main function
 main();
 
-// Function to execute git commands
 const executeGitCommand = (command) => {
   try {
     execSync(command, { stdio: 'inherit' });
   } catch (err) {
-    console.error(`Error executing git command: ${command}`, err);
+    // Handle the 'nothing to commit' case gracefully
+    if (command.includes('git commit') && err.status === 1) {
+      console.log('Nothing to commit. Skipping...');
+      return;
+    }
+
+    console.error(`Error executing git command: ${command}\n${err.stderr}`);
+    throw err; // if you want to stop further execution
   }
 };
+// // Function to execute git commands
+// const executeGitCommand = (command) => {
+//   try {
+//     execSync(command, { stdio: 'inherit' });
+//   } catch (err) {
+//     console.error(`Error executing git command: ${command}`, err);
+//   }
+// };
 
 // Function to handle git operations
 const handleGitOperations = () => {
@@ -112,7 +126,7 @@ const handleGitOperations = () => {
 // Set up chokidar to watch the current directory
 const watcher = chokidar.watch(process.cwd(), {
   persistent: true,
-  ignored: outputFileName,
+  ignored: [outputFileName, '**/.git/**'],
   depth: 0,
 });
 
