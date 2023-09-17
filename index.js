@@ -138,10 +138,10 @@ const handleGitOperations = () => {
 };
 
 // Set up chokidar to watch the current directory
-const watcher = chokidar.watch(process.cwd(), {
+const watcher = chokidar.watch(__dirname, {
   persistent: true,
-  ignored: [outputFileName, '**/.git/**', /(^|[\/\\])\../],
-  ignoreInitial: true, // this will ignore all files upon initialization
+  ignored: ['**/.git/**', /(^|[\/\\])\../],
+  ignoreInitial: false, // this will ignore all files upon initialization
   depth: 0,
 });
 
@@ -156,10 +156,10 @@ watcher.on('add', (filePath) => {
   const ext = path.extname(filePath).substring(1);
 
   // Check if the added file is the output HTML file
-  if (path.basename(filePath) === outputFileName) {
-    console.log('Output HTML file updated. Skipping regeneration...');
-    return;
-  }
+  //   if (path.basename(filePath) === outputFileName) {
+  //     console.log('Output HTML file updated. Skipping regeneration...');
+  //     return;
+  //   }
 
   if (imageExtensions.includes(ext)) {
     console.log(`Image added: ${filePath}. Regenerating HTML...`);
@@ -181,4 +181,4 @@ watcher.on('add', (filePath) => {
 //   }
 // });
 
-console.log(`Watching for new images in directory: ${process.cwd()}`);
+console.log(`Watching for new images in directory: ${__dirname}`);
