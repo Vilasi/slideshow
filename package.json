@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "chokidar": "^3.5.3"
+    "chokidar": "^3.5.3",
+    "pm2-windows-startup": "^1.0.3"
   }
 }

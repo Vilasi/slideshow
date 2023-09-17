@@ -1,9 +1,11 @@
+//* This is a custom script that automatically generates a static HTML Photo Gallery site every time a photo is added to my personal computer slideshow directory
 const fs = require('fs');
 const path = require('path');
 const chokidar = require('chokidar');
 const { execSync } = require('child_process');
 const absolutePath = path.resolve(__dirname);
 
+// List of supported image file extensions
 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 const outputFileName = 'index.html';
 
@@ -93,16 +95,18 @@ const main = () => {
   // Delete existing HTML file
   deleteExistingHTMLFile(outputFileName);
 
+  // Get image files from the current directory
   const imageFiles = getImageFiles(process.cwd());
   const htmlContent = generateHTML(imageFiles);
 
+  // Write the HTML content to the output file
   fs.writeFileSync(outputFileName, htmlContent, 'utf8');
 };
 
 // Execute the main function
 main();
-// handleGitOperations();
 
+// Function to execute Git commands - Add/Commit/Push to the Remote Repo
 const executeGitCommand = (command) => {
   try {
     execSync(command, { stdio: 'inherit' });
@@ -118,14 +122,6 @@ const executeGitCommand = (command) => {
     throw err; // if you want to stop further execution
   }
 };
-// // Function to execute git commands
-// const executeGitCommand = (command) => {
-//   try {
-//     execSync(command, { stdio: 'inherit' });
-//   } catch (err) {
-//     console.error(`Error executing git command: ${command}`, err);
-//   }
-// };
 
 // Function to handle git operations
 const handleGitOperations = () => {
@@ -141,7 +137,7 @@ const handleGitOperations = () => {
   }
 };
 
-// Set up chokidar to watch the current directory
+// Set up chokidar to watch the current directory for file additions
 const watcher = chokidar.watch(absolutePath, {
   persistent: true,
   ignored: ['**/.git/**', /(^|[\/\\])\../],
@@ -149,18 +145,11 @@ const watcher = chokidar.watch(absolutePath, {
   depth: 0,
 });
 
+// Event handler for file additions
 watcher.on('add', (filePath) => {
   console.log(`File added: ${filePath}`);
 
   const ext = path.extname(filePath).substring(1);
-
-  // ============================
-  // Check if the added file is the output HTML file
-  //   if (path.basename(filePath) === outputFileName) {
-  //     console.log('Output HTML file updated. Skipping regeneration...');
-  //     return;
-  //   }
-  // ============================
 
   if (imageExtensions.includes(ext)) {
     main();
@@ -171,20 +160,9 @@ watcher.on('add', (filePath) => {
   }
 });
 
+// This indicates if the watcher is functioning properly.
 watcher.on('ready', () => {
   console.log('Watcher is ready and watching for changes...');
-  console.log(absolutePath);
 });
-
-// watcher.on('add', (filePath) => {
-//   const ext = path.extname(filePath).substring(1);
-//   if (imageExtensions.includes(ext)) {
-//     console.log(`Image added: ${filePath}. Regenerating HTML...`);
-//     main();
-
-//     // Handle git operations after generating the HTML
-//     handleGitOperations();
-//   }
-// });
 
 console.log(`Watching for new images in directory: ${absolutePath}`);
