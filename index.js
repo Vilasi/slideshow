@@ -6,7 +6,7 @@ const { execSync } = require('child_process');
 const absolutePath = path.resolve(__dirname);
 
 // List of supported image file extensions
-const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'JPG'];
 const outputFileName = 'index.html';
 
 // Function to delete existing HTML file if it exists
